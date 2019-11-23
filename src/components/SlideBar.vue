@@ -21,13 +21,12 @@
                 <span>{{userinfo.loginname}}</span>
             </router-link>
 
-
             </div>
         </div>
         <div class="bg-default recent_topics">
             <div class="topbar">作者最近主题：</div>
             <ul>
-                <li v-for="list in topiclimitby5" :key="list">
+                <li v-for="list in topiclimitby5" :key="list.id">
                     <router-link :to="{
                         name:'post_content',
                         params:{
@@ -43,7 +42,7 @@
         <div class=" bg-default recent_replies">
             <div class="topbar">作者最近回复</div>
             <ul>
-                <li v-for="list in replylimitby5" :key="list">
+                <li v-for="list in replylimitby5" :key="list.id">
                     <router-link :to="{
                         name:'post_content',
                         params:{
@@ -64,7 +63,9 @@ export default {
     name:'SlideBar',
     data() {
         return {
-            userinfo:{}
+            userinfo:{},
+            topiclimitby5:[],
+            replylimitby5:[]
         }
     },
     methods:{
@@ -72,24 +73,28 @@ export default {
             this.$axios.get(`https://cnodejs.org/api/v1/user/${this.$route.params.name}`)
             .then((res)=>{
                 this.isLoding = false
-                this.userinfo = res.data.data
+                this.userinfo = res.data.data   
+                this.topic_limit_by5()
+                this.reply_limit_by5()
             })
             .catch((err)=>{
                 console.log(err)
             })
-        }
-    },
-    computed:{
-        topiclimitby5(){
-            if(this.userinfo.recent_topics.length){
-                return this.userinfo.recent_topics.slice(0,4)
+        },
+        topic_limit_by5(){
+            if(this.userinfo.recent_topics.length>4){
+                this.topiclimitby5 =  this.userinfo.recent_topics.slice(0,4)
+            }else{
+                 this.topiclimitby5 = this.userinfo.recent_topics
             }
         },
-        replylimitby5(){
-            if(this.userinfo.recent_replies.length){
-                return this.userinfo.recent_replies.slice(0,4)
+        reply_limit_by5(){
+            if(this.userinfo.recent_replies.length>4){
+               this.replylimitby5 = this.userinfo.recent_replies.slice(0,4)
+            }else{
+                this.replylimitby5 = this.userinfo.recent_replies
             }
-        },
+        }        
     },
     beforeMount(){
         this.isLoding = true,

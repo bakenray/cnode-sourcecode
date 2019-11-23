@@ -71,6 +71,7 @@ export default {
     margin: 0 2px;
     border-radius: 2px;
     color: #778087;
+    cursor: pointer;
 }
 .pagebtn:hover{
     background: #80bd01;
